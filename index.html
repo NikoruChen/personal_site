@@ -100,8 +100,14 @@
             font-size: 48px;
             font-weight: 700;
             color: #2a2a2a;
-            background: linear-gradient(135deg, #e6eefb, #cfe0f6);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            background: transparent;
+            overflow: hidden;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
         .hero h1 {
             font-size: 46px;
@@ -538,7 +544,7 @@
         async function loadHome() {
             if (homeContent) return homeContent;
             try {
-                homeContent = await fetch("home.json").then(r => r.json());
+                homeContent = await fetch("home.json", { cache: "no-store" }).then(r => r.json());
             } catch (e) {
                 homeContent = {};
             }
@@ -549,9 +555,12 @@
             const c = await loadHome();
             const headline = Array.isArray(c.headline) ? c.headline : [c.headline || "六格"];
             const cta = c.cta || {};
+            const avatar = c.avatarImage
+                ? `<img src="${escapeHtml(c.avatarImage)}" alt="${escapeHtml(c.avatar || "六")}">`
+                : escapeHtml(c.avatar || "六");
             app.innerHTML = `
                 <section class="hero">
-                    <div class="avatar">${escapeHtml(c.avatar || "六")}</div>
+                    <div class="avatar">${avatar}</div>
                     <h1>${headline.map(escapeHtml).join("<br>")}</h1>
                     <p class="lead">${escapeHtml(c.lead || "")}</p>
                     <div class="hero-actions">
