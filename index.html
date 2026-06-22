@@ -456,7 +456,10 @@
         }
 
         function fmtDate(s) {
-            const d = new Date(s);
+            // Parse plain YYYY-MM-DD as a local date (not UTC) to avoid an
+            // off-by-one day when the browser timezone is behind UTC.
+            const ymd = /^(\d{4})-(\d{2})-(\d{2})$/.exec((s || "").trim());
+            const d = ymd ? new Date(+ymd[1], +ymd[2] - 1, +ymd[3]) : new Date(s);
             if (isNaN(d)) return s;
             return d.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
         }
