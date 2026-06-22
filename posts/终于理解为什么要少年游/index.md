@@ -1,7 +1,7 @@
 ---
 title: 终于理解为什么要少年游
 date: 2025-06-09
-image: posts/covers/终于理解为什么要少年游.jpg
+image: posts/终于理解为什么要少年游/cover.jpg
 ---
 
 # 终于理解为什么要少年游

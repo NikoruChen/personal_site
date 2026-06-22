@@ -1,7 +1,7 @@
 ---
 title: 觉醒后的牛马如何破局
 date: 2025-09-15
-image: posts/covers/觉醒后的牛马如何破局.jpg
+image: posts/觉醒后的牛马如何破局/cover.jpg
 ---
 
 # 觉醒后的牛马如何破局

@@ -507,11 +507,11 @@
         let cache = null;
         async function loadPosts() {
             if (cache) return cache;
-            const files = await fetch(`${POSTS_DIR}/index.json`, { cache: "no-store" }).then(r => r.json());
-            const posts = await Promise.all(files.map(async file => {
-                const text = await fetch(`${POSTS_DIR}/${file}`, { cache: "no-store" }).then(r => r.text());
+            const slugs = await fetch(`${POSTS_DIR}/index.json`, { cache: "no-store" }).then(r => r.json());
+            const posts = await Promise.all(slugs.map(async slug => {
+                const text = await fetch(`${POSTS_DIR}/${slug}/index.md`, { cache: "no-store" }).then(r => r.text());
                 const { meta, body } = parsePost(text);
-                return { slug: file.replace(/\.md$/, ""), file, meta, body };
+                return { slug, file: `${slug}/index.md`, meta, body };
             }));
             posts.sort((a, b) => new Date(b.meta.date) - new Date(a.meta.date));
             cache = posts;

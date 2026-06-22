@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Sync publish-ready posts from a Notion database into this repo.
 
-Pulls every page whose publish checkbox is ticked, exports it as Markdown,
-downloads the cover + any inline images, and regenerates posts/index.json so
-the site picks the posts up automatically.
+Pulls every page whose publish checkbox is ticked, exports it as Markdown, and
+writes each post into its own folder: posts/<slug>/index.md plus posts/<slug>/
+cover.<ext> and any inline images under posts/<slug>/images/. Then regenerates
+posts/index.json (an array of slugs) so the site picks the posts up.
 
 Usage
 -----
@@ -55,9 +56,9 @@ NOTION_VERSION = "2026-03-11"
 API = "https://api.notion.com/v1"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Each post lives in its own folder: posts/<slug>/index.md plus its cover.<ext>
+# and any inline images under posts/<slug>/images/.
 POSTS_DIR = os.path.join(ROOT, "posts")
-COVERS_DIR = os.path.join(POSTS_DIR, "covers")
-IMAGES_DIR = os.path.join(POSTS_DIR, "images")
 
 # --- tiny .env loader -------------------------------------------------------
 
@@ -241,7 +242,7 @@ def clean_markdown(md):
 IMG_RE = re.compile(r"!\[([^\]]*)\]\((https?://[^)\s]+)\)")
 
 
-def localize_images(markdown, slug):
+def localize_images(markdown, post_dir):
     """Download inline images (Notion's URLs expire) and rewrite to local paths."""
     counter = [0]
 
@@ -249,7 +250,7 @@ def localize_images(markdown, slug):
         counter[0] += 1
         alt, url = m.group(1), m.group(2)
         try:
-            rel = download(url, os.path.join(IMAGES_DIR, slug), f"img-{counter[0]}")
+            rel = download(url, os.path.join(post_dir, "images"), f"img-{counter[0]}")
         except Exception as e:  # keep the original URL if a download fails
             print(f"  ! inline image download failed ({e}); keeping remote URL")
             return m.group(0)
@@ -268,6 +269,7 @@ def write_post(page, schema, date_prop, dry_run):
         print(f"  ! skipping page {page['id']} with empty title")
         return None
     slug = slugify(title)
+    post_dir = os.path.join(POSTS_DIR, slug)
     date = get_date(props, date_prop, page["created_time"])
     category = get_category(props)
 
@@ -280,15 +282,16 @@ def write_post(page, schema, date_prop, dry_run):
     fm = [f"title: {title}", f"date: {date}"]
 
     if not dry_run:
+        os.makedirs(post_dir, exist_ok=True)
         if cover_url(page):
             try:
-                img = download(cover_url(page), COVERS_DIR, slug)
+                img = download(cover_url(page), post_dir, "cover")
                 fm.append(f"image: {img}")
             except Exception as e:
                 print(f"  ! cover download failed for '{title}': {e}")
-        body = localize_images(body, slug)
+        body = localize_images(body, post_dir)
     elif cover_url(page):
-        fm.append(f"image: posts/covers/{slug}.<ext>")
+        fm.append(f"image: posts/{slug}/cover.<ext>")
 
     if category:
         fm.append(f"category: {category}")
@@ -298,19 +301,19 @@ def write_post(page, schema, date_prop, dry_run):
         body = f"# {title}\n\n{body}"
 
     content = "---\n" + "\n".join(fm) + "\n---\n\n" + body + "\n"
-    filename = f"{slug}.md"
 
     if dry_run:
-        print(f"  would write posts/{filename} (date {date})")
-        return filename
+        print(f"  would write posts/{slug}/index.md (date {date})")
+        return slug
 
-    with open(os.path.join(POSTS_DIR, filename), "w", encoding="utf-8") as f:
+    with open(os.path.join(post_dir, "index.md"), "w", encoding="utf-8") as f:
         f.write(content)
-    print(f"  wrote posts/{filename}")
-    return filename
+    print(f"  wrote posts/{slug}/index.md")
+    return slug
 
 
-def read_date(md_path):
+def read_date(slug):
+    md_path = os.path.join(POSTS_DIR, slug, "index.md")
     with open(md_path, encoding="utf-8") as f:
         text = f.read()
     m = re.search(r"^date:\s*(.+)$", text, re.MULTILINE)
@@ -318,12 +321,13 @@ def read_date(md_path):
 
 
 def rebuild_index():
-    files = [f for f in os.listdir(POSTS_DIR) if f.endswith(".md")]
-    files.sort(key=lambda f: read_date(os.path.join(POSTS_DIR, f)), reverse=True)
+    slugs = [d for d in os.listdir(POSTS_DIR)
+             if os.path.isfile(os.path.join(POSTS_DIR, d, "index.md"))]
+    slugs.sort(key=read_date, reverse=True)
     with open(os.path.join(POSTS_DIR, "index.json"), "w", encoding="utf-8") as f:
-        json.dump(files, f, ensure_ascii=False, indent=2)
+        json.dump(slugs, f, ensure_ascii=False, indent=2)
         f.write("\n")
-    print(f"rebuilt posts/index.json ({len(files)} posts)")
+    print(f"rebuilt posts/index.json ({len(slugs)} posts)")
 
 
 def main():

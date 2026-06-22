@@ -1,7 +1,7 @@
 ---
 title: 打工人请自行代入
 date: 2025-12-19
-image: posts/covers/打工人请自行代入.png
+image: posts/打工人请自行代入/cover.png
 ---
 
 # 打工人请自行代入

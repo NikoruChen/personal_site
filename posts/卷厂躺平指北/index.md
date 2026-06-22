@@ -1,7 +1,7 @@
 ---
 title: 卷厂躺平指北
 date: 2025-09-29
-image: posts/covers/卷厂躺平指北.jpg
+image: posts/卷厂躺平指北/cover.jpg
 ---
 
 # 卷厂躺平指北

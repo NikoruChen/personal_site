@@ -1,7 +1,7 @@
 ---
 title: 年纪越大，格局越小
 date: 2025-06-22
-image: posts/covers/年纪越大，格局越小.jpeg
+image: posts/年纪越大，格局越小/cover.jpeg
 ---
 
 # 年纪越大，格局越小

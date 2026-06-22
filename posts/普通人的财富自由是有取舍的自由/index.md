@@ -1,7 +1,7 @@
 ---
 title: 普通人的财富自由是有取舍的自由
 date: 2025-09-24
-image: posts/covers/普通人的财富自由是有取舍的自由.jpg
+image: posts/普通人的财富自由是有取舍的自由/cover.jpg
 ---
 
 # 普通人的财富自由是有取舍的自由

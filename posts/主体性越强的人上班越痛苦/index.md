@@ -1,7 +1,7 @@
 ---
 title: 主体性越强的人上班越痛苦
 date: 2026-05-25
-image: posts/covers/主体性越强的人上班越痛苦.jpg
+image: posts/主体性越强的人上班越痛苦/cover.jpg
 ---
 
 # 主体性越强的人上班越痛苦

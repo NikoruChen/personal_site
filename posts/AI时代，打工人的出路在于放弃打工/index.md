@@ -1,7 +1,7 @@
 ---
 title: AI时代，打工人的出路在于放弃打工
 date: 2026-06-15
-image: posts/covers/AI时代，打工人的出路在于放弃打工.jpeg
+image: posts/AI时代，打工人的出路在于放弃打工/cover.jpeg
 ---
 
 # AI时代，打工人的出路在于放弃打工

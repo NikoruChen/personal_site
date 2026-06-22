@@ -1,7 +1,7 @@
 ---
 title: 周围全是轨道人，旷野人该如何自处
 date: 2026-02-10
-image: posts/covers/周围全是轨道人，旷野人该如何自处.jpg
+image: posts/周围全是轨道人，旷野人该如何自处/cover.jpg
 ---
 
 # 周围全是轨道人，旷野人该如何自处

@@ -1,7 +1,7 @@
 ---
 title: 一心躺平的牛马如何挑选牛棚
 date: 2025-10-09
-image: posts/covers/一心躺平的牛马如何挑选牛棚.png
+image: posts/一心躺平的牛马如何挑选牛棚/cover.png
 ---
 
 # 一心躺平的牛马如何挑选牛棚

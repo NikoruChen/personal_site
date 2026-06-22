@@ -1,2 +1,45 @@
 # liuge.life
-Personal website
+
+Personal website (六格) — a Chinese card-style blog of 笔记, served via GitHub
+Pages at [liuge.life](https://liuge.life).
+
+It's a single static `index.html` (a small hash-routed SPA, no build step) plus
+markdown posts. Deploy by pushing to `main`.
+
+## Layout
+
+```
+index.html          # the whole site: styles, router, tiny markdown renderer
+home.json           # landing-page content (avatar, headline, lead, CTA)
+posts/
+  index.json        # array of post slugs, newest first
+  <slug>/
+    index.md        # frontmatter (title, date, image) + body
+    cover.<ext>     # cover image
+    images/         # inline images (if any)
+scripts/
+  sync_notion.py    # pull posts from Notion into posts/  (see scripts/README.md)
+CNAME               # custom domain mapping
+```
+
+## Develop
+
+```bash
+python3 -m http.server      # preview at http://localhost:8000
+```
+
+Open `http://localhost:8000/#/posts` to see the post list. (Serve over HTTP —
+opening `index.html` as a `file://` won't let it fetch the posts.)
+
+## Publishing posts
+
+Posts are authored in Notion and pulled in with `scripts/sync_notion.py`, which
+writes each note into `posts/<slug>/`. Full setup and usage are in
+[`scripts/README.md`](scripts/README.md). The typical flow:
+
+```bash
+python3 scripts/sync_notion.py "笔记标题"          # pull one note
+git add -A && git commit -m "Publish: 笔记标题" && git push
+```
+
+Pushing to `main` deploys via GitHub Pages.
