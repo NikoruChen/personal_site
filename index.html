@@ -340,8 +340,26 @@
             margin: 40px 0 12px;
         }
         article p { margin: 0 0 20px; }
-        article ul { padding-left: 22px; margin: 0 0 20px; }
+        article img { max-width: 100%; height: auto; border-radius: 12px; margin: 4px 0 24px; }
+        article blockquote {
+            margin: 0 0 20px;
+            padding: 4px 18px;
+            border-left: 3px solid var(--muted);
+            color: var(--muted);
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: 0 8px 8px 0;
+        }
+        article blockquote p { margin: 12px 0; }
+        article ul, article ol { padding-left: 22px; margin: 0 0 20px; }
         article li { margin-bottom: 8px; }
+        article hr { border: none; border-top: 1px solid var(--muted); opacity: 0.3; margin: 32px 0; }
+        article code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.88em;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 2px 6px;
+            border-radius: 5px;
+        }
         article strong { font-weight: 700; }
         article a { color: var(--text); }
 
@@ -401,27 +419,45 @@
         }
         function inline(s) {
             return escapeHtml(s)
+                .replace(/`([^`]+)`/g, "<code>$1</code>")
                 .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                .replace(/~~(.+?)~~/g, "<del>$1</del>")
                 .replace(/\*(.+?)\*/g, "<em>$1</em>")
+                .replace(/!\[(.*?)\]\((.+?)\)/g, '<img src="$2" alt="$1">')
                 .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>');
         }
         function renderMarkdown(md) {
             const lines = md.split("\n");
-            let html = "", inList = false;
+            let html = "", inList = false, inOList = false, inQuote = false;
             const closeList = () => { if (inList) { html += "</ul>"; inList = false; } };
+            const closeOList = () => { if (inOList) { html += "</ol>"; inOList = false; } };
+            const closeQuote = () => { if (inQuote) { html += "</blockquote>"; inQuote = false; } };
+            const closeBlocks = () => { closeList(); closeOList(); closeQuote(); };
             for (let raw of lines) {
                 const line = raw.trimEnd();
-                if (/^###\s+/.test(line)) { closeList(); html += "<h3>" + inline(line.replace(/^###\s+/, "")) + "</h3>"; }
-                else if (/^##\s+/.test(line)) { closeList(); html += "<h2>" + inline(line.replace(/^##\s+/, "")) + "</h2>"; }
-                else if (/^#\s+/.test(line)) { closeList(); html += "<h1>" + inline(line.replace(/^#\s+/, "")) + "</h1>"; }
+                if (/^###\s+/.test(line)) { closeBlocks(); html += "<h3>" + inline(line.replace(/^###\s+/, "")) + "</h3>"; }
+                else if (/^##\s+/.test(line)) { closeBlocks(); html += "<h2>" + inline(line.replace(/^##\s+/, "")) + "</h2>"; }
+                else if (/^#\s+/.test(line)) { closeBlocks(); html += "<h1>" + inline(line.replace(/^#\s+/, "")) + "</h1>"; }
+                else if (/^(-{3,}|\*{3,}|_{3,})$/.test(line)) { closeBlocks(); html += "<hr>"; }
+                else if (/^>\s?/.test(line)) {
+                    closeList(); closeOList();
+                    if (!inQuote) { html += "<blockquote>"; inQuote = true; }
+                    html += "<p>" + inline(line.replace(/^>\s?/, "")) + "</p>";
+                }
                 else if (/^[-*]\s+/.test(line)) {
+                    closeOList(); closeQuote();
                     if (!inList) { html += "<ul>"; inList = true; }
                     html += "<li>" + inline(line.replace(/^[-*]\s+/, "")) + "</li>";
                 }
-                else if (line.trim() === "") { closeList(); }
-                else { closeList(); html += "<p>" + inline(line) + "</p>"; }
+                else if (/^\d+\.\s+/.test(line)) {
+                    closeList(); closeQuote();
+                    if (!inOList) { html += "<ol>"; inOList = true; }
+                    html += "<li>" + inline(line.replace(/^\d+\.\s+/, "")) + "</li>";
+                }
+                else if (line.trim() === "") { closeBlocks(); }
+                else { closeBlocks(); html += "<p>" + inline(line) + "</p>"; }
             }
-            closeList();
+            closeBlocks();
             return html;
         }
 
@@ -445,7 +481,11 @@
         function excerpt(body, max = 150) {
             const text = (body || "")
                 .replace(/^#{1,6}\s+.*$/gm, "")        // heading lines
-                .replace(/^[-*]\s+/gm, "")             // list markers
+                .replace(/!\[.*?\]\(.*?\)/g, "")       // images
+                .replace(/^[-*]\s+/gm, "")             // bullet markers
+                .replace(/^\d+\.\s+/gm, "")            // ordered markers
+                .replace(/^>\s?/gm, "")                // blockquote markers
+                .replace(/`([^`]+)`/g, "$1")           // inline code
                 .replace(/\*\*(.+?)\*\*/g, "$1")       // bold
                 .replace(/\*(.+?)\*/g, "$1")           // italic
                 .replace(/\[(.+?)\]\(.+?\)/g, "$1")    // links -> text
@@ -467,9 +507,9 @@
         let cache = null;
         async function loadPosts() {
             if (cache) return cache;
-            const files = await fetch(`${POSTS_DIR}/index.json`).then(r => r.json());
+            const files = await fetch(`${POSTS_DIR}/index.json`, { cache: "no-store" }).then(r => r.json());
             const posts = await Promise.all(files.map(async file => {
-                const text = await fetch(`${POSTS_DIR}/${file}`).then(r => r.text());
+                const text = await fetch(`${POSTS_DIR}/${file}`, { cache: "no-store" }).then(r => r.text());
                 const { meta, body } = parsePost(text);
                 return { slug: file.replace(/\.md$/, ""), file, meta, body };
             }));
