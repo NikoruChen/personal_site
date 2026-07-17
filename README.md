@@ -1,6 +1,6 @@
 # liuge.life
 
-Personal website (六格) — a Chinese card-style blog of 笔记, served via GitHub
+Personal website (大木) — a Chinese card-style blog of 笔记, served via GitHub
 Pages at [liuge.life](https://liuge.life).
 
 It's a single static `index.html` (a small hash-routed SPA, no build step) plus

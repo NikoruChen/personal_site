@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>六格</title>
+    <title>大木</title>
     <meta name="description" content="关于折腾、旅行，和我在读的书。">
     <style>
         :root {
@@ -391,7 +391,7 @@
 <body>
     <header>
         <div class="wrap header-inner">
-            <a class="brand" href="#/">六格</a>
+            <a class="brand" href="#/">大木</a>
             <nav>
                 <a href="#/" data-route="home">首页</a>
                 <a href="#/posts" data-route="posts">笔记</a>
@@ -405,7 +405,7 @@
         </main>
 
         <footer>
-            <span>© <span id="year"></span> 六格</span>
+            <span>© <span id="year"></span> 大木</span>
         </footer>
     </div>
 
@@ -597,7 +597,7 @@
 
         async function renderHome() {
             const c = await loadHome();
-            const headline = Array.isArray(c.headline) ? c.headline : [c.headline || "六格"];
+            const headline = Array.isArray(c.headline) ? c.headline : [c.headline || "大木"];
             const cta = c.cta || {};
             const avatar = c.avatarImage
                 ? `<img src="${escapeHtml(c.avatarImage)}" alt="${escapeHtml(c.avatar || "六")}">`
