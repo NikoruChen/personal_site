@@ -25,5 +25,26 @@
     </itunes:category>
     <itunes:explicit>false</itunes:explicit>
     <itunes:type>episodic</itunes:type>
+    <item>
+      <title>0.野蛮生长，枝粗叶壮</title>
+      <itunes:title>0.野蛮生长，枝粗叶壮</itunes:title>
+      <description><![CDATA[<p>简单介绍一下这档播客。</p>
+<p>📑 本期内容包括<br />00:22 我是谁<br />01:00 做播客是为了满足自恋？<br />03:36 为什么叫「粗枝壮叶」</p>
+<p>🌲 关于《粗枝壮叶》<br />一档关于自由、成长与人生选择的播客。主播大木，曾是世俗眼里的 “精英”，如今正努力摆脱精英主义的评判标尺，找回属于自己的生长节奏。在这里，我会持续记录自己向内探索的心路历程，也会分享我对周遭万物的观察与思考。如果你也正处于相似的人生阶段，欢迎与我交流。愿我们扎根本心，一枝一叶地生长出丰盈、坚定的自我。</p>
+<p>📻 收听方式：<br />苹果播客｜小宇宙｜网易云音乐｜喜马拉雅</p>
+<p>👀 在哪里还能找到主播大木<br /><a href="https://damu.blog/">damu.blog</a>｜<a href="https://www.xiaohongshu.com/user/profile/680aef83000000000e010872">小红书</a></p>]]></description>
+      <content:encoded><![CDATA[<p>简单介绍一下这档播客。</p>
+<p>📑 本期内容包括<br />00:22 我是谁<br />01:00 做播客是为了满足自恋？<br />03:36 为什么叫「粗枝壮叶」</p>
+<p>🌲 关于《粗枝壮叶》<br />一档关于自由、成长与人生选择的播客。主播大木，曾是世俗眼里的 “精英”，如今正努力摆脱精英主义的评判标尺，找回属于自己的生长节奏。在这里，我会持续记录自己向内探索的心路历程，也会分享我对周遭万物的观察与思考。如果你也正处于相似的人生阶段，欢迎与我交流。愿我们扎根本心，一枝一叶地生长出丰盈、坚定的自我。</p>
+<p>📻 收听方式：<br />苹果播客｜小宇宙｜网易云音乐｜喜马拉雅</p>
+<p>👀 在哪里还能找到主播大木<br /><a href="https://damu.blog/">damu.blog</a>｜<a href="https://www.xiaohongshu.com/user/profile/680aef83000000000e010872">小红书</a></p>]]></content:encoded>
+      <enclosure url="https://czzy.damu.blog/episodes/0-20260723.mp3" length="7790385" type="audio/mpeg"/>
+      <guid isPermaLink="false">czzy-0-5d8e419f</guid>
+      <pubDate>Thu, 23 Jul 2026 16:52:59 -0700</pubDate>
+      <itunes:duration>00:05:25</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>false</itunes:explicit>
+    </item>
+
   </channel>
 </rss>
