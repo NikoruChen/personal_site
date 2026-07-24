@@ -1,7 +1,42 @@
 # CLAUDE.md — `czzy/`
 
-The RSS feed for the podcast 《粗枝壮叶》. See the repo-root `CLAUDE.md` for what lives
-here and the rules for editing `feed.xml`.
+The RSS feed for the podcast 《粗枝壮叶》:
+
+- **`feed.xml`** — served at `https://damu.blog/czzy/feed.xml`. **The podcast's source of
+  truth**: there is no manifest anywhere, so this one file holds both the show metadata (the
+  `<channel>` block) and every published episode (`<item>`).
+- **`cover.png`** — the show artwork. In this repo only because the feed cites it by public URL.
+- **`feed.xsl`** — the browser preview; see below.
+
+The tooling that maintains `feed.xml` lives in the separate, private **`guild`** repo
+(`podcast/publish/`), where the `podcast-publish` skill uploads each episode's audio to
+Cloudflare R2 (behind `czzy.damu.blog`) and splices a new `<item>` into this file.
+
+## Read this before every edit
+
+Apple's spec is the standard this feed is held to — a feed that violates it gets rejected
+or silently mis-rendered in Apple Podcasts, and the other apps follow Apple's lead:
+
+**https://podcasters.apple.com/support/823-podcast-requirements**
+
+Fetch that page and read it **every time** you are about to change anything in this
+directory — `feed.xml`, `cover.png`, or any file added later. Don't work from memory of
+what the requirements say; they change, and the details (tag names, required vs.
+recommended, artwork dimensions, category names) are exactly what breaks a feed.
+
+## Editing `feed.xml` by hand — three rules
+
+- The **`<channel>` block is fair game** — that's how the show's title, description, categories
+  and owner email change. Run `feed.py validate` in `guild` afterwards; Apple rejects category
+  names that don't match its list exactly.
+- **Never touch an existing `<item>`'s `<guid>`.** It's how podcast apps recognize an episode
+  they already have; change one and every subscriber re-downloads it as new. `feed.py validate`
+  compares against the last committed version of this file and hard-fails if a published guid
+  disappears — which is also why every publish must be committed.
+- **The boilerplate below each episode's `<!-- czzy:footer -->` comment is generated** — the show
+  blurb, where to listen, the host's handles. It's the same for every episode and lives in
+  `guild` at `podcast/publish/footer.md`; edit it there and run `feed.py refresh-footer`, which
+  re-stamps it on every episode at once. Editing it here gets overwritten on the next publish.
 
 ## `feed.xsl` — what a person sees at the feed URL
 
@@ -27,15 +62,3 @@ To look at it: `python3 -m http.server` from the repo root, then open
 `http://localhost:8000/czzy/feed.xml`. A `file://` path won't work — browsers refuse to
 load a stylesheet for a local file. `feed.xsl` is presentation only; nothing in it can
 change what a podcast app sees.
-
-## Read this before every edit
-
-Apple's spec is the standard this feed is held to — a feed that violates it gets rejected
-or silently mis-rendered in Apple Podcasts, and the other apps follow Apple's lead:
-
-**https://podcasters.apple.com/support/823-podcast-requirements**
-
-Fetch that page and read it **every time** you are about to change anything in this
-directory — `feed.xml`, `cover.png`, or any file added later. Don't work from memory of
-what the requirements say; they change, and the details (tag names, required vs.
-recommended, artwork dimensions, category names) are exactly what breaks a feed.
