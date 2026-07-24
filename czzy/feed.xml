@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="feed.xsl"?>
-<!-- The podcast's source of truth. Episodes are spliced in by `feed.py add` in the guild repo,
-     and the boilerplate below each one's `czzy:footer` marker is re-stamped by `feed.py
-     refresh-footer` — nothing else in an <item> ever changes, least of all a published <guid>.
-     The <channel> block is the hand-edited part. See CLAUDE.md. -->
+<!-- The podcast's source of truth. Episodes are spliced in by `feed.py add` in the guild repo
+     and are never rewritten afterwards — least of all a published <guid>. The <channel> block
+     is the hand-edited part. See CLAUDE.md. -->
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>粗枝壮叶</title>
