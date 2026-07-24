@@ -29,7 +29,6 @@
   <xsl:variable name="xiaoyuzhou">https://www.xiaoyuzhoufm.com/podcast/6a62aa6d49796b3301442d93</xsl:variable>
   <xsl:variable name="netease">https://music.163.com/#/djradio?id=1495839989</xsl:variable>
   <xsl:variable name="ximalaya">https://www.ximalaya.com/album/127426621</xsl:variable>
-  <xsl:variable name="spotify"></xsl:variable>
 
   <xsl:template match="/">
     <html lang="zh-cn">
@@ -313,10 +312,6 @@
         <xsl:call-template name="platform">
           <xsl:with-param name="url" select="$ximalaya"/>
           <xsl:with-param name="label" select="'喜马拉雅'"/>
-        </xsl:call-template>
-        <xsl:call-template name="platform">
-          <xsl:with-param name="url" select="$spotify"/>
-          <xsl:with-param name="label" select="'Spotify'"/>
         </xsl:call-template>
       </div>
 

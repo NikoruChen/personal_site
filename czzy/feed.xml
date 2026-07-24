@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="feed.xsl"?>
-<!-- The podcast's source of truth. Episodes are spliced in by `feed.py add` in the guild repo;
-     the <channel> block is hand-edited. Never change a published <item>'s <guid>. See CLAUDE.md. -->
+<!-- The podcast's source of truth. Episodes are spliced in by `feed.py add` in the guild repo,
+     and the boilerplate below each one's `czzy:footer` marker is re-stamped by `feed.py
+     refresh-footer` — nothing else in an <item> ever changes, least of all a published <guid>.
+     The <channel> block is the hand-edited part. See CLAUDE.md. -->
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>粗枝壮叶</title>
@@ -32,14 +34,16 @@
       <itunes:title>0.野蛮生长，枝粗叶壮</itunes:title>
       <description><![CDATA[<p>简单介绍一下这档播客。</p>
 <p>📑 本期内容包括<br />00:22 我是谁<br />01:00 做播客是为了满足自恋？<br />03:36 为什么叫「粗枝壮叶」</p>
+<!-- czzy:footer -->
 <p>🌲 关于《粗枝壮叶》<br />一档关于自由、成长与人生选择的播客。主播大木，曾是世俗眼里的 “精英”，如今正努力摆脱精英主义的评判标尺，找回属于自己的生长节奏。在这里，我会持续记录自己向内探索的心路历程，也会分享我对周遭万物的观察与思考。如果你也正处于相似的人生阶段，欢迎与我交流。愿我们扎根本心，一枝一叶地生长出丰盈、坚定的自我。</p>
-<p>📻 收听方式：<br />苹果播客｜小宇宙｜网易云音乐｜喜马拉雅</p>
-<p>👀 在哪里还能找到主播大木<br /><a href="https://damu.blog/">damu.blog</a>｜<a href="https://www.xiaohongshu.com/user/profile/680aef83000000000e010872">小红书</a></p>]]></description>
+<p>📻 收听方式<br /><a href="https://podcasts.apple.com/us/podcast/%E7%B2%97%E6%9E%9D%E5%A3%AE%E5%8F%B6/id6794143342">苹果播客</a>｜<a href="https://www.xiaoyuzhoufm.com/podcast/6a62aa6d49796b3301442d93">小宇宙</a>｜<a href="https://music.163.com/#/djradio?id=1495839989">网易云音乐</a>｜<a href="https://www.ximalaya.com/album/127426621">喜马拉雅</a></p>
+<p>👀 在哪里还能找到主播大木<br /><a href="https://damu.blog">damu.blog</a>｜<a href="https://www.xiaohongshu.com/user/profile/680aef83000000000e010872">小红书</a></p>]]></description>
       <content:encoded><![CDATA[<p>简单介绍一下这档播客。</p>
 <p>📑 本期内容包括<br />00:22 我是谁<br />01:00 做播客是为了满足自恋？<br />03:36 为什么叫「粗枝壮叶」</p>
+<!-- czzy:footer -->
 <p>🌲 关于《粗枝壮叶》<br />一档关于自由、成长与人生选择的播客。主播大木，曾是世俗眼里的 “精英”，如今正努力摆脱精英主义的评判标尺，找回属于自己的生长节奏。在这里，我会持续记录自己向内探索的心路历程，也会分享我对周遭万物的观察与思考。如果你也正处于相似的人生阶段，欢迎与我交流。愿我们扎根本心，一枝一叶地生长出丰盈、坚定的自我。</p>
-<p>📻 收听方式：<br />苹果播客｜小宇宙｜网易云音乐｜喜马拉雅</p>
-<p>👀 在哪里还能找到主播大木<br /><a href="https://damu.blog/">damu.blog</a>｜<a href="https://www.xiaohongshu.com/user/profile/680aef83000000000e010872">小红书</a></p>]]></content:encoded>
+<p>📻 收听方式<br /><a href="https://podcasts.apple.com/us/podcast/%E7%B2%97%E6%9E%9D%E5%A3%AE%E5%8F%B6/id6794143342">苹果播客</a>｜<a href="https://www.xiaoyuzhoufm.com/podcast/6a62aa6d49796b3301442d93">小宇宙</a>｜<a href="https://music.163.com/#/djradio?id=1495839989">网易云音乐</a>｜<a href="https://www.ximalaya.com/album/127426621">喜马拉雅</a></p>
+<p>👀 在哪里还能找到主播大木<br /><a href="https://damu.blog">damu.blog</a>｜<a href="https://www.xiaohongshu.com/user/profile/680aef83000000000e010872">小红书</a></p>]]></content:encoded>
       <enclosure url="https://czzy.damu.blog/episodes/0-20260723.mp3" length="7790385" type="audio/mpeg"/>
       <guid isPermaLink="false">czzy-0-5d8e419f</guid>
       <pubDate>Thu, 23 Jul 2026 16:52:59 -0700</pubDate>
