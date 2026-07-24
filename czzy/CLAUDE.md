@@ -33,13 +33,13 @@ recommended, artwork dimensions, category names) are exactly what breaks a feed.
   they already have; change one and every subscriber re-downloads it as new. `feed.py validate`
   compares against the last committed version of this file and hard-fails if a published guid
   disappears — which is also why every publish must be committed.
-- **The boilerplate closing each episode's description is generated** — the show blurb, where to
-  listen, the host's handles. It lives in `guild` at `podcast/publish/footer.md` and is appended
-  when the episode is added to the feed. Editing it here changes that one episode only and puts
-  it out of step with the source; edit `footer.md` instead, which the next episode picks up.
-  (Episode 0 carries a leftover `<!-- czzy:footer -->` comment from when footers were re-stamped
-  in place. It's inert — an HTML comment inside CDATA — and stays because a published `<item>`
-  isn't rewritten.)
+- **Everything below an episode's `<!-- czzy:footer -->` comment is generated** — the show blurb,
+  where to listen, the host's handles. That marker is why it's there: it separates the episode's
+  own show notes from the boilerplate appended when the episode was added to the feed. The
+  boilerplate lives in `guild` at `podcast/publish/footer.md`. Editing it here changes that one
+  episode and puts it out of step with the source; edit `footer.md` instead, which the next
+  episode published picks up. Earlier episodes keep the footer they shipped with — nothing
+  re-stamps them, so the footers legitimately differ between episodes.
 
 ## `feed.xsl` — what a person sees at the feed URL
 
