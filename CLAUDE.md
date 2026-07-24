@@ -12,7 +12,7 @@ Each post is a folder `posts/<slug>/` containing `index.md` (YAML frontmatter �
 
 ## Podcast (`czzy/`)
 
-`czzy/` holds the RSS feed for the podcast 《粗枝壮叶》 — `czzy/feed.xml`, served at `https://damu.blog/czzy/feed.xml`, plus `czzy/cover.png` (the show artwork, which is in this repo only because the feed cites it by public URL).
+`czzy/` holds the RSS feed for the podcast 《粗枝壮叶》 — `czzy/feed.xml`, served at `https://damu.blog/czzy/feed.xml`, plus `czzy/cover.png` (the show artwork, which is in this repo only because the feed cites it by public URL) and `czzy/feed.xsl` (the browser preview). See `czzy/CLAUDE.md` — it requires reading Apple's podcast requirements before any edit in there.
 
 **`czzy/feed.xml` is the podcast's source of truth** — there is no manifest anywhere. It holds both the show metadata (the `<channel>` block) and every published episode (`<item>`). The tooling that maintains it lives in the separate, private **`guild`** repo (`podcast/publish/`), where the `podcast-publish` skill uploads each episode's audio to Cloudflare R2 (behind `czzy.damu.blog`) and splices a new `<item>` into this file.
 
