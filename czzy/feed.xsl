@@ -39,219 +39,10 @@
         <meta name="description" content="{normalize-space(rss/channel/description)}"/>
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-        <style>
-          :root {
-            --bg: #ffffff;
-            --text: #1a1a1a;
-            --muted: #6b6b6b;
-            --accent: #1a1a1a;
-            --line: #ececec;
-            --maxw: 880px;
-          }
-
-          @media (prefers-color-scheme: dark) {
-            :root {
-              --bg: #111111;
-              --text: #ededed;
-              --muted: #9a9a9a;
-              --accent: #ffffff;
-              --line: #262626;
-            }
-          }
-
-          * { box-sizing: border-box; }
-
-          html { -webkit-text-size-adjust: 100%; }
-
-          body {
-            margin: 0;
-            background: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            font-size: 18px;
-            line-height: 1.65;
-            -webkit-font-smoothing: antialiased;
-          }
-
-          .wrap {
-            max-width: var(--maxw);
-            margin: 0 auto;
-            padding: 0 24px;
-          }
-
-          /* Header — same chrome as index.html */
-          header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: color-mix(in srgb, var(--bg) 88%, transparent);
-            backdrop-filter: saturate(180%) blur(12px);
-            -webkit-backdrop-filter: saturate(180%) blur(12px);
-            border-bottom: 1px solid var(--line);
-          }
-          .header-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-          }
-          .brand {
-            font-weight: 800;
-            font-size: 20px;
-            letter-spacing: -0.01em;
-            color: var(--text);
-            text-decoration: none;
-          }
-          nav { display: flex; align-items: center; }
-          nav a {
-            color: var(--muted);
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            margin-left: 28px;
-            transition: color 0.15s ease;
-          }
-          nav a:hover { color: var(--text); }
-          nav a.active { color: var(--text); font-weight: 600; }
-
-          /* Show */
-          .hero {
-            text-align: center;
-            padding: 72px 0 56px;
-            border-bottom: 1px solid var(--line);
-          }
-          .cover {
-            width: 300px;
-            height: 300px;
-            max-width: 100%;
-            border-radius: 32px;
-            margin: 0 auto 28px;
-            display: block;
-            object-fit: cover;
-          }
-          .hero h1 {
-            font-size: 46px;
-            line-height: 1.12;
-            letter-spacing: -0.03em;
-            margin: 0 0 14px;
-            font-weight: 800;
-          }
-          .hero .byline {
-            color: var(--muted);
-            font-size: 15px;
-            letter-spacing: 0.04em;
-            margin: 0;
-          }
-          .about {
-            max-width: 640px;
-            margin: 0 auto;
-            padding: 36px 0 4px;
-            font-size: 17px;
-            color: var(--muted);
-          }
-
-          /* Episodes */
-          .intro { padding: 56px 0 8px; }
-          .intro h2 {
-            font-size: 36px;
-            line-height: 1.15;
-            letter-spacing: -0.03em;
-            margin: 0;
-            font-weight: 800;
-          }
-          .episodes { padding: 8px 0 24px; }
-          .ep {
-            padding: 32px 0;
-            border-bottom: 1px solid var(--line);
-          }
-          .ep-meta {
-            font-size: 13px;
-            letter-spacing: 0.04em;
-            color: var(--muted);
-            margin-bottom: 8px;
-          }
-          .ep h3 {
-            font-size: 23px;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin: 0 0 16px;
-          }
-          audio {
-            width: 100%;
-            display: block;
-            margin: 0 0 20px;
-          }
-
-          /* 收听平台 — the same pill as index.html's .btn-ghost */
-          .platforms {
-            max-width: 640px;
-            margin: 0 auto;
-            padding: 20px 0 4px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-          }
-          .platform {
-            display: inline-block;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: 999px;
-            border: 1px solid var(--line);
-            color: var(--text);
-            transition: background 0.15s ease;
-          }
-          .platform:hover { background: var(--line); }
-
-          /* Show notes, collapsed until asked for */
-          .notes summary {
-            cursor: pointer;
-            list-style: none;
-            display: inline-block;
-            color: var(--muted);
-            font-size: 15px;
-            font-weight: 500;
-            transition: color 0.15s ease;
-          }
-          .notes summary::-webkit-details-marker { display: none; }
-          .notes summary::after {
-            content: "›";
-            display: inline-block;
-            margin-left: 6px;
-            transition: transform 0.15s ease;
-          }
-          .notes[open] summary::after { transform: rotate(90deg); }
-          .notes summary:hover { color: var(--text); }
-          .notes .prose { padding-top: 16px; }
-
-          /* Prose — the show description and the show notes */
-          .prose p { margin: 0 0 20px; }
-          .prose p:last-child { margin-bottom: 0; }
-          .prose a {
-            color: var(--text);
-            text-decoration: underline;
-            text-underline-offset: 2px;
-          }
-          .ep .prose { font-size: 17px; }
-
-          footer {
-            padding: 32px 0 56px;
-            color: var(--muted);
-            font-size: 14px;
-          }
-          footer a { color: var(--muted); text-decoration: none; }
-          footer a:hover { color: var(--text); }
-
-          @media (max-width: 600px) {
-            .hero { padding: 48px 0 40px; }
-            .hero h1 { font-size: 34px; }
-            .cover { width: 220px; height: 220px; border-radius: 24px; }
-            .intro h2 { font-size: 28px; }
-            .ep h3 { font-size: 21px; }
-          }
-        </style>
+        <!-- The chrome, type scale and buttons shared with the rest of the site;
+             then the parts only this page has. -->
+        <link rel="stylesheet" href="/styles/base.css"/>
+        <link rel="stylesheet" href="/czzy/feed.css"/>
       </head>
       <body>
         <header>
@@ -335,7 +126,7 @@
 
   <xsl:template match="item">
     <div class="ep">
-      <div class="ep-meta">
+      <div class="meta">
         <xsl:call-template name="date">
           <xsl:with-param name="rfc" select="pubDate"/>
         </xsl:call-template>
@@ -370,7 +161,7 @@
     <xsl:param name="url"/>
     <xsl:param name="label"/>
     <xsl:if test="$url != ''">
-      <a class="platform" href="{$url}" target="_blank" rel="noopener">
+      <a class="btn btn-ghost" href="{$url}" target="_blank" rel="noopener">
         <xsl:value-of select="$label"/>
       </a>
     </xsl:if>
