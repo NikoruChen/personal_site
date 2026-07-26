@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大木</title>
     <meta name="description" content="关于折腾、旅行，和我在读的书。">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <style>
         :root {
             --bg: #ffffff;
@@ -395,6 +397,8 @@
             <nav>
                 <a href="#/" data-route="home">首页</a>
                 <a href="#/posts" data-route="posts">笔记</a>
+                <!-- The podcast is its own page: czzy/feed.xml rendered by czzy/feed.xsl. -->
+                <a href="/czzy/feed.xml">播客</a>
             </nav>
         </div>
     </header>
@@ -599,6 +603,7 @@
             const c = await loadHome();
             const headline = Array.isArray(c.headline) ? c.headline : [c.headline || "大木"];
             const cta = c.cta || {};
+            const cta2 = c.ctaSecondary;
             const avatar = c.avatarImage
                 ? `<img src="${escapeHtml(c.avatarImage)}" alt="${escapeHtml(c.avatar || "六")}">`
                 : escapeHtml(c.avatar || "六");
@@ -609,6 +614,7 @@
                     <p class="lead">${escapeHtml(c.lead || "")}</p>
                     <div class="hero-actions">
                         <a class="btn btn-primary" href="${escapeHtml(cta.href || "#/posts")}">${escapeHtml(cta.label || "阅读笔记 →")}</a>
+                        ${cta2 ? `<a class="btn btn-primary" href="${escapeHtml(cta2.href || "")}">${escapeHtml(cta2.label || "")}</a>` : ""}
                     </div>
                 </section>`;
             window.scrollTo(0, 0);

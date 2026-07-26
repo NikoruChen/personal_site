@@ -1,10 +1,14 @@
 {
   "avatar": "六",
   "avatarImage": "avatar.png",
-  "headline": ["愿我们都能成为","最本真的自己"],
-  "lead": "一个普通人从轨道走向旷野的心路历程",
+  "headline": ["野蛮生长，枝粗叶壮"],
+  "lead": "一个普通人慢慢生长出丰盈自我的故事",
   "cta": {
     "label": "阅读笔记 →",
     "href": "#/posts"
+  },
+  "ctaSecondary": {
+    "label": "收听播客 →",
+    "href": "/czzy/feed.xml"
   }
 }
