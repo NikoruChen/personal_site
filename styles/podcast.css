@@ -1,0 +1,99 @@
+/*
+  The 播客 screen only: the show header, the episode list and the show notes.
+
+  Every rule is scoped to .podcast. All three stylesheets load into the one document
+  the SPA lives in, so an unscoped .hero or .intro here would reach the landing page
+  and the posts list too.
+*/
+
+/* Show — no rule under the title: the artwork already separates it from the
+   description below, and the line only made the two read as different sections. */
+.podcast .hero {
+    padding: 72px 0 0;
+    border-bottom: none;
+}
+/* The title is the last thing in the hero, so the gap below it belongs to .about. */
+.podcast .hero h1 { margin-bottom: 0; }
+.podcast .cover {
+    width: 300px;
+    height: 300px;
+    max-width: 100%;
+    border-radius: 32px;
+    margin: 0 auto 28px;
+    display: block;
+    object-fit: cover;
+}
+.podcast .about {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 0 4px;
+    font-size: 17px;
+    color: var(--muted);
+}
+
+/* 收听平台 — a row of base.css's ghost pills */
+.podcast .platforms {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 0 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+/* Episodes */
+.podcast .episodes { padding: 8px 0 24px; }
+.podcast .ep {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+}
+.podcast .ep h3 {
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+}
+.podcast audio {
+    width: 100%;
+    display: block;
+    margin: 0 0 20px;
+}
+
+/* Show notes, collapsed until asked for */
+.podcast .notes summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-block;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.15s ease;
+}
+.podcast .notes summary::-webkit-details-marker { display: none; }
+.podcast .notes summary::after {
+    content: "›";
+    display: inline-block;
+    margin-left: 6px;
+    transition: transform 0.15s ease;
+}
+.podcast .notes[open] summary::after { transform: rotate(90deg); }
+.podcast .notes summary:hover { color: var(--text); }
+.podcast .notes .prose { padding-top: 16px; }
+
+/* Prose — the show description and the show notes */
+.podcast .prose p { margin: 0 0 20px; }
+.podcast .prose p:last-child { margin-bottom: 0; }
+.podcast .prose a {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.podcast .ep .prose { font-size: 17px; }
+
+@media (max-width: 600px) {
+    .podcast .hero { padding: 48px 0 0; }
+    .podcast .cover { width: 220px; height: 220px; border-radius: 24px; }
+    .podcast .intro h2 { font-size: 28px; }
+    .podcast .ep h3 { font-size: 21px; }
+}

@@ -9,6 +9,6 @@
   },
   "ctaSecondary": {
     "label": "收听播客 →",
-    "href": "/czzy/feed.xml"
+    "href": "#/podcast"
   }
 }

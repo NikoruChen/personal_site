@@ -1,5 +1,7 @@
-// Loading and shaping the site's content: the posts under posts/ and the landing
-// page copy in home.json. Both are fetched once and cached for the session.
+// Where every word on the site comes from — the notes under posts/, the landing page
+// copy in home.json, and the podcast in czzy/feed.xml. Each source is fetched once and
+// cached for the session, and handed to the screens as plain objects: nothing in here
+// knows what any of it looks like.
 
 const POSTS_DIR = "posts";
 
@@ -80,3 +82,64 @@ const CARD_STYLES = {
 };
 const DEFAULT_STYLE = { icon: "📝", bg: "linear-gradient(135deg, #f0f0f0, #dcdcdc)" };
 export function cardStyle(category) { return CARD_STYLES[category] || DEFAULT_STYLE; }
+
+// --- the podcast, read out of the RSS feed ---
+//
+// czzy/feed.xml is the show's source of truth and the file Apple and the other
+// directories subscribe to. It is only ever read from here, never written.
+
+const FEED_URL = "/czzy/feed.xml";
+const ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd";
+
+// Direct children only: <channel> and its <item>s use the same tag names, so a
+// descendant search would read an episode's title as the show's.
+function child(parent, name, ns = null) {
+    return [...parent.children].find(el =>
+        el.localName === name && (ns === null || el.namespaceURI === ns));
+}
+function childText(parent, name, ns = null) {
+    const el = child(parent, name, ns);
+    return el ? el.textContent.trim() : "";
+}
+
+// "Thu, 23 Jul 2026 16:52:59 -0700" → "2026年7月23日". Read off the string rather than
+// through Date, so the date shown is the one the episode was published with and does
+// not shift a day for a reader in another timezone.
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function fmtPubDate(rfc) {
+    const m = /(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/.exec(rfc || "");
+    if (!m) return rfc || "";
+    return `${m[3]}年${MONTHS.indexOf(m[2]) + 1}月${Number(m[1])}日`;
+}
+
+let show = null;
+export async function loadShow() {
+    if (show) return show;
+    const xml = await fetch(FEED_URL, { cache: "no-store" }).then(r => r.text());
+    const doc = new DOMParser().parseFromString(xml, "application/xml");
+    if (doc.querySelector("parsererror")) throw new Error("feed did not parse");
+
+    const channel = doc.querySelector("rss > channel");
+    const cover = child(channel, "image", ITUNES_NS);
+    show = {
+        title: childText(channel, "title"),
+        cover: cover ? cover.getAttribute("href") : "",
+        // The description and the show notes are HTML inside CDATA — markup to a
+        // reader, plain text to the parser. The screen sets them as HTML.
+        description: childText(channel, "description"),
+        episodes: [...channel.children].filter(el => el.localName === "item").map(item => {
+            const audio = child(item, "enclosure");
+            const duration = childText(item, "duration", ITUNES_NS);
+            return {
+                title: childText(item, "title"),
+                date: fmtPubDate(childText(item, "pubDate")),
+                // hh:mm:ss, but drop a zero hour — nobody writes 00:05:25.
+                duration: duration.startsWith("00:") ? duration.slice(3) : duration,
+                audio: audio ? audio.getAttribute("url") : "",
+                notes: childText(item, "description"),
+            };
+        }),
+    };
+    return show;
+}
