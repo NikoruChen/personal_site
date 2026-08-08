@@ -1,0 +1,114 @@
+# Scheduled release for 《粗枝壮叶》.
+#
+# An episode is prepared days ahead by the publish skill in the private `guild` repo: it
+# uploads the audio, splices the new <item> into czzy/feed.xml with the release time as its
+# <pubDate>, and pushes that as a `publish/*` branch. main is left untouched, so the site
+# shows nothing and no podcast app can see the episode.
+#
+# This is the other half. Every quarter hour it asks one question of each pending branch —
+# has that episode's <pubDate> arrived? — and fast-forwards main onto the ones that are due.
+# THE FEED IS THE SCHEDULE: the date lives in the episode itself, so there is no second copy
+# to drift out of step with what listeners will be shown.
+#
+# It deliberately validates nothing. `feed.py validate --check-urls` already ran on the
+# author's machine before the branch existed — the XML parsed, the guids were intact, the
+# audio answered at its URL. Repeating any of that here would mean a second implementation
+# of feed.py in a repo that cannot import it. The one thing that genuinely can change in the
+# waiting days is main moving underneath, and `git rebase` is already exactly that check.
+#
+# Why a PAT and not the built-in GITHUB_TOKEN: a push made with GITHUB_TOKEN does not trigger
+# GitHub Pages to rebuild. main would move and damu.blog would go on serving the old feed —
+# silently. PUBLISH_TOKEN is a fine-grained token with Contents: write, and pushing as a real
+# account is what makes the deploy happen.
+#
+# Only the copy of this file on main has a live schedule; GitHub runs cron from the default
+# branch alone. That is what stops a pending branch from ever releasing itself.
+
+name: scheduled publish
+
+on:
+  schedule:
+    # Best-effort, and often a few minutes late under load — a release lands within about a
+    # quarter hour of its <pubDate>, never before it.
+    - cron: "*/15 * * * *"
+  workflow_dispatch:        # release anything already due, right now
+
+# Nothing here uses the automatic token; every write goes through PUBLISH_TOKEN.
+permissions: {}
+
+concurrency:
+  group: scheduled-publish
+  cancel-in-progress: false   # never interrupt a run that may be mid-push
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0                            # every branch, not just main
+          token: ${{ secrets.PUBLISH_TOKEN }}       # also what later pushes authenticate with
+
+      - name: Release every episode whose pubDate has arrived
+        run: |
+          set -euo pipefail
+          git config user.name  "czzy release"
+          git config user.email "noreply@damu.blog"
+
+          # stdout is the list of branches to release; the human-readable log goes to stderr.
+          due=$(python3 - <<'PY'
+          import subprocess
+          import sys
+          import xml.etree.ElementTree as ET
+          from datetime import datetime, timezone
+          from email.utils import parsedate_to_datetime
+
+
+          def git(*args):
+              return subprocess.run(("git",) + args, capture_output=True, text=True,
+                                    check=True).stdout
+
+
+          now = datetime.now(timezone.utc)
+          refs = git("for-each-ref", "--format=%(refname:short)",
+                     "refs/remotes/origin/publish/*").split()
+          if not refs:
+              print("no episode is waiting to be released", file=sys.stderr)
+
+          for ref in refs:
+              # The newest episode is the first <item> — feed.xml is newest-first, and the
+              # skill splices each new one in at the top.
+              item = ET.fromstring(git("show", "%s:czzy/feed.xml" % ref)).find("channel/item")
+              when = parsedate_to_datetime(item.findtext("pubDate"))
+              title = (item.findtext("title") or "").strip()
+              if when <= now:
+                  print(ref)
+                  print("DUE   %s  %s  (%s)" % (ref, title, when.isoformat()), file=sys.stderr)
+              else:
+                  hours = (when - now).total_seconds() / 3600
+                  ahead = "%.1f hours" % hours if hours < 48 else "%.1f days" % (hours / 24)
+                  print("wait  %s  %s  goes live %s, in %s"
+                        % (ref, title, when.isoformat(), ahead), file=sys.stderr)
+          PY
+          )
+
+          if [ -z "$due" ]; then
+            exit 0
+          fi
+
+          for ref in $due; do
+            branch="${ref#origin/}"
+            echo "::group::releasing $branch"
+            git checkout -B release "$ref"
+            # Fails the job if main touched feed.xml while this branch waited, which is the
+            # only way the prepared <item> can have gone stale.
+            git rebase origin/main
+            git push origin HEAD:main
+            # Keep the local ref honest so a second due branch rebases onto what was just
+            # pushed rather than onto the main this run started with.
+            git update-ref refs/remotes/origin/main HEAD
+            git push origin --delete "$branch"
+            echo "released $branch — Pages will rebuild damu.blog"
+            echo "::endgroup::"
+          done
