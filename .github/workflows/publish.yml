@@ -70,26 +70,54 @@ jobs:
                                     check=True).stdout
 
 
+          def feed(ref):
+              return ET.fromstring(git("show", "%s:czzy/feed.xml" % ref))
+
+
+          def note(text):
+              print(text, file=sys.stderr)
+
+
           now = datetime.now(timezone.utc)
+          published = {(el.findtext("guid") or "").strip()
+                       for el in feed("origin/main").findall("channel/item")}
           refs = git("for-each-ref", "--format=%(refname:short)",
                      "refs/remotes/origin/publish/*").split()
           if not refs:
-              print("no episode is waiting to be released", file=sys.stderr)
+              note("no episode is waiting to be released")
 
           for ref in refs:
               # The newest episode is the first <item> — feed.xml is newest-first, and the
               # skill splices each new one in at the top.
-              item = ET.fromstring(git("show", "%s:czzy/feed.xml" % ref)).find("channel/item")
+              item = feed(ref).find("channel/item")
               when = parsedate_to_datetime(item.findtext("pubDate"))
               title = (item.findtext("title") or "").strip()
-              if when <= now:
-                  print(ref)
-                  print("DUE   %s  %s  (%s)" % (ref, title, when.isoformat()), file=sys.stderr)
-              else:
+              guid = (item.findtext("guid") or "").strip()
+
+              if when > now:
                   hours = (when - now).total_seconds() / 3600
                   ahead = "%.1f hours" % hours if hours < 48 else "%.1f days" % (hours / 24)
-                  print("wait  %s  %s  goes live %s, in %s"
-                        % (ref, title, when.isoformat(), ahead), file=sys.stderr)
+                  note("wait  %s  %s  goes live %s, in %s"
+                       % (ref, title, when.isoformat(), ahead))
+                  continue
+
+              # Being due only says WHEN. These two say WHETHER, and neither can be settled
+              # on the author's machine days earlier: both compare the branch against a main
+              # that was free to move while the branch waited. A branch failing either is
+              # left alone rather than deleted — it is holding work nobody has explained,
+              # and an unattended job should not be the thing that discards it.
+              if guid in published:
+                  note("SKIP  %s  its newest episode (%s) is already published — this "
+                       "branch adds none" % (ref, guid))
+                  continue
+              changed = git("diff", "--name-only", "origin/main...%s" % ref).split()
+              if changed != ["czzy/feed.xml"]:
+                  note("SKIP  %s  changes more than the feed: %s"
+                       % (ref, " ".join(changed) or "(nothing)"))
+                  continue
+
+              print(ref)
+              note("DUE   %s  %s  (%s)" % (ref, title, when.isoformat()))
           PY
           )
 
@@ -104,18 +132,11 @@ jobs:
             # Fails the job if main touched feed.xml while this branch waited, which is the
             # only way the prepared <item> can have gone stale.
             git rebase origin/main
-            if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ]; then
-              # Nothing main is missing — so nothing ships and Pages is not disturbed. Say
-              # so rather than claiming a release, since this log is the only account of
-              # what happened while nobody was watching.
-              echo "$branch held nothing new; main already has all of it"
-            else
-              git push origin HEAD:main
-              # Keep the local ref honest so a second due branch rebases onto what was just
-              # pushed rather than onto the main this run started with.
-              git update-ref refs/remotes/origin/main HEAD
-              echo "released $branch — Pages will rebuild damu.blog"
-            fi
+            git push origin HEAD:main
+            # Keep the local ref honest so a second due branch rebases onto what was just
+            # pushed rather than onto the main this run started with.
+            git update-ref refs/remotes/origin/main HEAD
+            echo "released $branch — Pages will rebuild damu.blog"
             git push origin --delete "$branch"
             echo "::endgroup::"
           done
