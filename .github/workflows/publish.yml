@@ -104,11 +104,18 @@ jobs:
             # Fails the job if main touched feed.xml while this branch waited, which is the
             # only way the prepared <item> can have gone stale.
             git rebase origin/main
-            git push origin HEAD:main
-            # Keep the local ref honest so a second due branch rebases onto what was just
-            # pushed rather than onto the main this run started with.
-            git update-ref refs/remotes/origin/main HEAD
+            if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)" ]; then
+              # Nothing main is missing — so nothing ships and Pages is not disturbed. Say
+              # so rather than claiming a release, since this log is the only account of
+              # what happened while nobody was watching.
+              echo "$branch held nothing new; main already has all of it"
+            else
+              git push origin HEAD:main
+              # Keep the local ref honest so a second due branch rebases onto what was just
+              # pushed rather than onto the main this run started with.
+              git update-ref refs/remotes/origin/main HEAD
+              echo "released $branch — Pages will rebuild damu.blog"
+            fi
             git push origin --delete "$branch"
-            echo "released $branch — Pages will rebuild damu.blog"
             echo "::endgroup::"
           done
