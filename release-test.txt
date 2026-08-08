@@ -1,3 +1,0 @@
-Proving PUBLISH_TOKEN can release and that Pages rebuilds.
-Created 2026-08-08T22:26:39Z
-Delete this file once the test has passed.
