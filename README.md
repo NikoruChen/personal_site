@@ -1,7 +1,7 @@
 # damu.blog
 
-Personal website (大木) — a Chinese card-style blog of 笔记, and the RSS feed for the
-podcast 《粗枝壮叶》. Served via GitHub Pages at [damu.blog](https://damu.blog).
+Personal website (大木) — a Chinese card-style blog of 笔记. Served via GitHub Pages at
+[damu.blog](https://damu.blog).
 
 Static, with no build step and no dependencies. Deploy by pushing to `main`.
 
@@ -23,12 +23,3 @@ each note into `posts/<slug>/`. Setup — including the Notion credentials it ne
 python3 scripts/sync_notion.py "笔记标题"          # pull one note
 git add -A && git commit -m "Publish: 笔记标题" && git push
 ```
-
-## The podcast
-
-`czzy/feed.xml` is the feed every podcast app polls, served at
-[damu.blog/czzy/feed.xml](https://damu.blog/czzy/feed.xml); the audio itself is on
-Cloudflare R2 behind `czzy.damu.blog`. It is the show's source of truth — there is no
-manifest behind it — and it is maintained from the private **`guild`** repo
-(`podcast/publish/`). Read [`czzy/CLAUDE.md`](czzy/CLAUDE.md) before editing it by hand;
-some of it is not safe to change.
