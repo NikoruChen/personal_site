@@ -5,8 +5,8 @@
 # <pubDate>, and pushes that as a `publish/*` branch. main is left untouched, so the site
 # shows nothing and no podcast app can see the episode.
 #
-# This is the other half. Every quarter hour it asks one question of each pending branch —
-# has that episode's <pubDate> arrived? — and fast-forwards main onto the ones that are due.
+# This is the other half. Every fifteen minutes or so it asks one question of each pending
+# branch — has that episode's <pubDate> arrived? — and fast-forwards main onto the ones due.
 # THE FEED IS THE SCHEDULE: the date lives in the episode itself, so there is no second copy
 # to drift out of step with what listeners will be shown.
 #
@@ -28,9 +28,13 @@ name: scheduled publish
 
 on:
   schedule:
-    # Best-effort, and often a few minutes late under load — a release lands within about a
-    # quarter hour of its <pubDate>, never before it.
-    - cron: "*/15 * * * *"
+    # Roughly every fifteen minutes, but deliberately off the quarter hours: GitHub treats a
+    # schedule as best-effort and drops ticks under load, and the load is other people's cron
+    # lines, which cluster on :00 and the quarters. Asking at :07 is asking for a quieter
+    # moment. A release still lands some minutes after its <pubDate> — never before it, since
+    # the test is pubDate <= now — so an episode's time is set an hour ahead of when anyone
+    # is waiting for it.
+    - cron: "7,22,37,52 * * * *"
   workflow_dispatch:        # release anything already due, right now
 
 # Nothing here uses the automatic token; every write goes through PUBLISH_TOKEN.
