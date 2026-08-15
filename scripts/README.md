@@ -103,8 +103,6 @@ also lists them and exits if a configured property is missing or the wrong type.
   database id to its first data source automatically.
 - Post folder names (slugs) are the note title verbatim (Chinese is fine);
   characters illegal in filenames (`\ / : * ? " < > |`) are stripped.
-- The site's markdown renderer (in `index.html`) supports headings, bullet and
-  numbered lists, blockquotes, horizontal rules, bold/italic/strikethrough,
-  inline code, links, and images. Other Notion blocks (tables, toggles, etc.)
-  are not rendered — extend `renderMarkdown` in `index.html` if you start using
-  them.
+- A post may only use the markdown subset `js/markdown.js` implements; anything
+  else reaches the page as literal text. Other Notion blocks (tables, toggles,
+  etc.) are not rendered — extend `renderMarkdown` there if you start using them.

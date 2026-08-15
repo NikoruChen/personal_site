@@ -8,7 +8,7 @@ posts/index.json (an array of slugs) so the site picks the posts up.
 
 Usage
 -----
-    export NOTION_TOKEN=secret_xxx          # your integration's internal token
+    export NOTION_TOKEN=ntn_xxx             # your integration's internal token
     export NOTION_DATABASE_ID=xxxxxxxx      # the database (not data source) id
     python3 scripts/sync_notion.py "标题"   # sync ONE note by exact title
     python3 scripts/sync_notion.py          # bulk-sync all publish-ready posts
@@ -262,7 +262,7 @@ def localize_images(markdown, post_dir):
 # --- main -------------------------------------------------------------------
 
 
-def write_post(page, schema, date_prop, dry_run):
+def write_post(page, date_prop, dry_run):
     props = page["properties"]
     title = get_title(props)
     if not title:
@@ -387,7 +387,7 @@ def main():
         print(f"Found {len(pages)} published post(s).")
 
     for page in pages:
-        write_post(page, schema, date_prop, args.dry_run)
+        write_post(page, date_prop, args.dry_run)
 
     if not args.dry_run:
         rebuild_index()

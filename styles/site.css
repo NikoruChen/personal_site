@@ -1,6 +1,10 @@
 /*
-  index.html only: the landing hero, the post list, the search box and the reader.
-  Loaded after base.css, which holds everything the podcast page shares.
+  The 首页, 笔记 list and reader screens: the landing hero, the post cards, the
+  search box and the article. Loaded after base.css, which holds the design system.
+
+  These rules are NOT scoped to a screen, so anything named here that the 播客 screen
+  also uses (.hero, .intro) reaches it too — which is why podcast.css restates those
+  two under .podcast. Prefer a name this file owns over adding to that overlap.
 */
 
 /* Landing */

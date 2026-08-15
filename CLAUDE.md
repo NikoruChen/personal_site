@@ -24,15 +24,22 @@ change to the site's look belongs there rather than in a per-screen stylesheet.
 
 **Per-screen CSS is scoped.** Every stylesheet loads into that one document, so each rule in
 `podcast.css` is scoped to `.podcast`; unscoped, a `.hero` there would reach the landing page
-too.
+too. `site.css` is the exception and predates the split — it owns the generic names (`.hero`,
+`.intro`) that `podcast.css` then has to restate under `.podcast`. A new screen gets its own
+scoped stylesheet; don't add to that overlap.
 
 **The landing page's copy lives in `home.json`**, not in the markup.
 
 ## Posts
 
 Each post is a folder `posts/<slug>/` containing `index.md` (YAML frontmatter — `title`, `date`,
-optional `image`, `category` — plus body) and `cover.<ext>`; inline images go in
-`posts/<slug>/images/`. `posts/index.json` is an array of slugs, newest first.
+optional `image` — plus body) and `cover.<ext>`; inline images go in `posts/<slug>/images/`.
+`posts/index.json` is an array of slugs, newest first.
+
+A post may also carry a `category`, which picks its card's icon and gradient (`CARD_STYLES` in
+`js/content.js`). Nothing writes one today: `sync_notion.py`'s `CATEGORY_PROP` is `None`, so
+every card falls back to its cover image. Point that constant at a Notion select property to
+turn categories on.
 
 A post may only use the subset of markdown `js/markdown.js` implements; anything else reaches
 the page as literal text.
