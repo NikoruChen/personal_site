@@ -7,6 +7,9 @@ import { escapeHtml } from "../markdown.js";
 import { loadShow } from "../content.js";
 
 // 收听平台 — paste a show URL to make its button appear, leave it empty to skip it.
+// The same links close every episode's description in the RSS feed, from footer.md in the guild
+// repo. A platform that moves has to be changed in both: this list is live, that one is frozen
+// into every episode already published.
 const PLATFORMS = [
     ["苹果播客", "https://podcasts.apple.com/us/podcast/%E7%B2%97%E6%9E%9D%E5%A3%AE%E5%8F%B6/id6794143342"],
     ["小宇宙", "https://www.xiaoyuzhoufm.com/podcast/6a62aa6d49796b3301442d93"],

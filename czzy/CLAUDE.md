@@ -9,8 +9,12 @@ The RSS feed for the podcast 《粗枝壮叶》:
 - **`feed.xsl`** — a redirect; see below.
 
 The tooling that maintains `feed.xml` lives in the separate, private **`guild`** repo
-(`podcast/publish/`), where the `podcast-publish` skill uploads each episode's audio to
-Cloudflare R2 (behind `czzy.damu.blog`) and splices a new `<item>` into this file.
+(`podcast/publish/`), where the `publish` skill uploads each episode's audio to Cloudflare R2
+(behind `czzy.damu.blog`) and splices a new `<item>` into this file.
+
+How and why all of that works is documented there. What lives here is the guardrails — what must
+not be done to these files, and what each rule protects. Keep it that way: a note added here says
+what to avoid and points at `guild`, it does not re-explain the pipeline.
 
 ## Read this before every edit
 
@@ -24,22 +28,27 @@ directory — `feed.xml`, `cover.png`, or any file added later. Don't work from 
 what the requirements say; they change, and the details (tag names, required vs.
 recommended, artwork dimensions, category names) are exactly what breaks a feed.
 
-## Editing `feed.xml` by hand — three rules
+## Editing `feed.xml` by hand — four rules
 
+- **An episode may already be waiting to go out.** A prepared release sits on a `publish/*`
+  branch until its `<pubDate>` arrives, and reaches `main` by fast-forward — so an edit landing
+  here first strands it, and the release passes with nothing appearing. Check before you touch
+  the file, and leave it alone while a branch is pending:
+  ```bash
+  git ls-remote --heads origin 'publish/*'
+  ```
+  What does the merging, and what it refuses, is `.github/workflows/publish.yml`.
 - The **`<channel>` block is fair game** — that's how the show's title, description, categories
   and owner email change. Run `feed.py validate` in `guild` afterwards; Apple rejects category
   names that don't match its list exactly.
 - **Never touch an existing `<item>`'s `<guid>`.** It's how podcast apps recognize an episode
   they already have; change one and every subscriber re-downloads it as new. `feed.py validate`
-  compares against the last committed version of this file and hard-fails if a published guid
-  disappears — which is also why every publish must be committed.
+  in `guild` hard-fails if a published guid disappears.
 - **Everything below an episode's `<!-- czzy:footer -->` comment is generated** — the show blurb,
-  where to listen, the host's handles. That marker is why it's there: it separates the episode's
-  own show notes from the boilerplate appended when the episode was added to the feed. The
-  boilerplate lives in `guild` at `podcast/publish/footer.md`. Editing it here changes that one
-  episode and puts it out of step with the source; edit `footer.md` instead, which the next
-  episode published picks up. Earlier episodes keep the footer they shipped with — nothing
-  re-stamps them, so the footers legitimately differ between episodes.
+  where to listen, the host's handles, appended when the episode was added to the feed. Editing it
+  here changes that one episode and puts it out of step with its source, which is
+  `guild/podcast/publish/footer.md`; edit that instead. The footers legitimately differ between
+  episodes — don't reconcile them.
 
 ## `feed.xsl` — what a person sees at the feed URL
 

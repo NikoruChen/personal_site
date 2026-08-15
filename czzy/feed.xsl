@@ -3,7 +3,7 @@
   Referenced by the <?xml-stylesheet?> line at the top of feed.xml: browsers apply it,
   podcast apps ignore it and read the raw XML. Nothing here affects the feed's contents.
 
-  The podcast's page for readers is /#/podcast, rendered by js/podcast.js from this same
+  The podcast's page for readers is /#/podcast, rendered by js/screens/podcast.js from this same
   feed — that way it sits inside the site and shares its header, footer and styles. All
   this stylesheet does is send a browser there; keep it, or visitors to the feed URL land
   on raw XML.
