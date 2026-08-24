@@ -9,7 +9,7 @@ The RSS feed for the podcast 《粗枝壮叶》:
 - **`feed.xsl`** — a redirect; see below.
 
 The tooling that maintains `feed.xml` lives in the separate, private **`guild`** repo
-(`podcast/publish/`), where the `publish` skill uploads each episode's audio to Cloudflare R2
+(`podcast/podcast-publish/`), where the `podcast-publish` skill uploads each episode's audio to Cloudflare R2
 (behind `czzy.damu.blog`) and splices a new `<item>` into this file.
 
 How and why all of that works is documented there. What lives here is the guardrails — what must
@@ -47,7 +47,7 @@ recommended, artwork dimensions, category names) are exactly what breaks a feed.
 - **Everything below an episode's `<!-- czzy:footer -->` comment is generated** — the show blurb,
   where to listen, the host's handles, appended when the episode was added to the feed. Editing it
   here changes that one episode and puts it out of step with its source, which is
-  `guild/podcast/publish/footer.md`; edit that instead. The footers legitimately differ between
+  `guild/podcast/podcast-publish/footer.md`; edit that instead. The footers legitimately differ between
   episodes — don't reconcile them.
 
 ## `feed.xsl` — what a person sees at the feed URL

@@ -1,6 +1,6 @@
 # Scheduled release for 《粗枝壮叶》.
 #
-# An episode is prepared days ahead by the publish skill in the private `guild` repo: it
+# An episode is prepared days ahead by the podcast-publish skill in the private `guild` repo: it
 # uploads the audio, splices the new <item> into czzy/feed.xml with the release time as its
 # <pubDate>, and pushes that as a `publish/*` branch. main is left untouched, so the site
 # shows nothing and no podcast app can see the episode.
